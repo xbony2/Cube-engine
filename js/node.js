@@ -27,7 +27,7 @@ const FACE = {
 	LEFT:   8,
 	TOP:    16,
 	BOTTOM: 32
-}
+};
 
 // rendering vertex order
 const VERTEX = {
@@ -37,7 +37,7 @@ const VERTEX = {
 	LEFT:   [3, 1, 0, 2],
 	TOP:    [2, 6, 7, 3],
 	BOTTOM: [0, 1, 5, 4]
-}
+};
 
 // vertex offset from node origin
 const OFFSET = [
@@ -53,8 +53,7 @@ const OFFSET = [
 
 // node definition, private: do not call directly
 // only the world can add a new node with addNode(x, y, z, type)
-function Node(x, y, z, type)
-{
+function Node(x, y, z, type){
 	this.x = x;
 	this.y = y;
 	this.z = z;
