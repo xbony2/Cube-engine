@@ -8,127 +8,96 @@
  * Licence: WTFPL 2.0 (http://en.wikipedia.org/wiki/WTFPL)
 */
 
-function World(seed)
-{
-	this.chunks = {};
-	this.newMap(seed);
+function World(seed){
+	this.chunks = {}
+	this.newMap(seed)
 }
 
-World.prototype.newMap = function(seed)
-{
-	this.chunks = {};
-	this.map = new Map(seed);
-	this.spawn = {x: 0, y: this.map.getAbsoluteHeight(0, 0)+3, z: 0};
+World.prototype.newMap = function(seed){
+	this.chunks = {}
+	this.map = new Map(seed)
+	this.spawn = {x: 0, y: this.map.getAbsoluteHeight(0, 0) + 3, z: 0}
 }
 
 // ############################################################ MAP METHODS
 
 // generate 9 chunks, the center chunk being at x, z
-World.prototype.mapGrid9 = function(x, z)
-{
-	for(var cx = x-1; cx <= x+1; cx++)
-	{
-		for(var cz = z-1; cz <= z+1; cz++)
-		{
+World.prototype.mapGrid9 = function(x, z){
+	for(var cx = x - 1; cx <= x + 1; cx++)
+		for(var cz = z - 1; cz <= z + 1; cz++){
 			// chunk already exists
-			if(this.chunks[cx+'_'+cz])
-			{
-				continue;
-			}
+			if(this.chunks[cx + '_' + cz])
+				continue
 			
-			this.addChunk(cx, cz);
+			this.addChunk(cx, cz)
 		}
-	}
 }
 
 // ############################################################ CHUNK METHODS
 
-function Chunk(x, z)
-{
-	this.x = x;
-	this.z = z;
-	this.nodes = {};
-	this.renderNodes = {};
+function Chunk(x, z){
+	this.x = x
+	this.z = z
+	this.nodes = {}
+	this.renderNodes = {}
 	
-	var map = new Map();
+	var map = new Map()
 	
 	this.corners = [
 		map.getAbsoluteHeight(this.x, this.z),
 		map.getAbsoluteHeight(this.x+16, this.z),
 		map.getAbsoluteHeight(this.x+16, this.z+16),
 		map.getAbsoluteHeight(this.x, this.z+16)
-	];
+	]
 }
 
 // generates a chunk with all its nodes
-World.prototype.addChunk = function(x, z)
-{
+World.prototype.addChunk = function(x, z){
 	// generate the map using world heightmap
 	for(var nx = 0; nx < 16; nx++)
-	{
-		for(var nz = 0; nz < 16; nz++)
-		{
-			var y = this.map.getAbsoluteHeight(16*x+nx, 16*z+nz);
+		for(var nz = 0; nz < 16; nz++){
+			var y = this.map.getAbsoluteHeight(16 * x + nx, 16 * z + nz)
 		
-			for(var ny = 0; ny < y; ny++)
-			{
+			for(var ny = 0; ny < y; ny++){
 				var type;
 				if(ny == 0)
-				{
-					type = 'bedrock';
-				}
-				else if(ny*2 < y)
-				{
-					type = 'stone';
-				}
-				else if((ny == 4 && ny == y-1) || (ny == 5 && ny == y-1) || (ny == 6 && ny == y-1))
-				{
+					type = 'bedrock'
+				else if(ny * 2 < y)
+					type = 'stone'
+				else if((ny == 4 && ny == y - 1) || (ny == 5 && ny == y - 1) || (ny == 6 && ny == y - 1)){
 					// water level
-					if(ny == 4 && ny == y-1)
-					{
-						this.addNode(16*x+nx, 5, 16*z+nz, 'water');
-						this.addNode(16*x+nx, 6, 16*z+nz, 'water');
+					if(ny == 4 && ny == y - 1){
+						this.addNode(16 * x + nx, 5, 16 * z + nz, 'water')
+						this.addNode(16 * x + nx, 6, 16 * z + nz, 'water')
 					}
-					if(ny == 5 && ny == y-1)
-					{
-						this.addNode(16*x+nx, 6, 16*z+nz, 'water');
-					}
-					type = 'sand';
-				}
-				else if(ny < y-1)
-				{
-					type = 'dirt';
-				}
+					if(ny == 5 && ny == y - 1)
+						this.addNode(16 * x + nx, 6, 16 * z + nz, 'water')
+					type = 'sand'
+				}else if(ny < y - 1)
+					type = 'dirt'
 				else
-				{
-					type = 'grass';
-				}
+					type = 'grass'
 				
-				this.addNode(16*x+nx, ny, 16*z+nz, type);
+				this.addNode(16 * x + nx, ny, 16 * z + nz, type)
 			}
 		}
-	}
 }
 
 // ############################################################ NODE METHODS
 
 // returns the node at x, y , z, false if there is no chunk or undefined if there is no node
-World.prototype.getNode = function(x, y, z)
-{
-	var cx = Math.floor(x/16);
-	var cz = Math.floor(z/16);
+World.prototype.getNode = function(x, y, z){
+	var cx = Math.floor(x / 16)
+	var cz = Math.floor(z / 16)
 	
-	if(this.chunks[cx+'_'+cz])
-	{
-		return this.chunks[cx+'_'+cz].nodes[x+'_'+y+'_'+z];
-	}
+	if(this.chunks[cx + '_' + cz])
+		return this.chunks[cx + '_' + cz].nodes[x + '_' + y + '_' + z]
 	
-	return false;
+	return false
 }
 
-World.prototype.addNode = function(x, y, z, type)
-{
-	var cx = Math.floor(x/16);
+World.prototype.addNode = function(x, y, z, type){
+	var cx = Math.floor(x/16) //TODO: refactor
 	var cz = Math.floor(z/16);
 	var node;
 	

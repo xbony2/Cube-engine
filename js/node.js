@@ -54,13 +54,13 @@ const OFFSET = [
 // node definition, private: do not call directly
 // only the world can add a new node with addNode(x, y, z, type)
 function Node(x, y, z, type){
-	this.x = x;
-	this.y = y;
-	this.z = z;
-	this.type = nodeType[type];
+	this.x = x
+	this.y = y
+	this.z = z
+	this.type = nodeType[type]
 	
 	// at first all faces are visible
-	this.sides = 0x3f; // = 0b111111
+	this.sides = 0x3f // = 0b111111
 	// bit | face
 	// ----+--------
 	// 0   | front
@@ -72,26 +72,20 @@ function Node(x, y, z, type){
 }
 
 // node definitions
-const nodeType = {};
+const nodeType = {}
 
 // restore type to loaded node using type id
-nodeType.getTypeName = function(id)
-{
+nodeType.getTypeName = function(id){
 	for(var key in nodeType)
-	{
 		if(typeof nodeType[key] == "object" && nodeType[key].id == id)
-		{
 			return key;
-		}
-	}
 }
 
 // ids are used to save data locally or to file
 nodeType.stone = {
 	id: 1,
 	color: '#828282',
-	texture: function(face)
-	{
+	texture: function(face){
 		return [1, 0];
 	},
 	transparent: false,
@@ -101,20 +95,13 @@ nodeType.stone = {
 nodeType.grass = {
 	id: 2,
 	color: '#749317',
-	texture: function(face)
-	{
+	texture: function(face){
 		if(face == FACE.TOP)
-		{
-			return [0, 0];
-		}
+			return [0, 0]
 		else if(face != FACE.BOTTOM)
-		{
-			return [3, 0];
-		}
+			return [3, 0]
 		else
-		{
-			return [2, 0];
-		}
+			return [2, 0]
 	},
 	transparent: false,
 	solid: true
@@ -123,9 +110,8 @@ nodeType.grass = {
 nodeType.dirt = {
 	id: 3,
 	color: '#703A00',
-	texture: function(face)
-	{
-		return [2, 0];
+	texture: function(face){
+		return [2, 0]
 	},
 	transparent: false,
 	solid: true
@@ -134,9 +120,8 @@ nodeType.dirt = {
 nodeType.cobblestone = {
 	id: 4,
 	color: '#787878',
-	texture: function(face)
-	{
-		return [0, 1];
+	texture: function(face){
+		return [0, 1]
 	},
 	transparent: false,
 	solid: true
@@ -145,9 +130,8 @@ nodeType.cobblestone = {
 nodeType.planks = {
 	id: 5,
 	color: '#E08907',
-	texture: function(face)
-	{
-		return [4, 0];
+	texture: function(face){
+		return [4, 0]
 	},
 	transparent: false,
 	solid: true
@@ -156,16 +140,11 @@ nodeType.planks = {
 nodeType.wood = {
 	id: 6,
 	color: '#642E00',
-	texture: function(face)
-	{
+	texture: function(face){
 		if(face < FACE.TOP)
-		{
-			return [4, 1];
-		}
+			return [4, 1]
 		else
-		{
-			return [5, 1];
-		}
+			return [5, 1]
 	},
 	transparent: false,
 	solid: true
@@ -174,9 +153,8 @@ nodeType.wood = {
 nodeType.bricks = {
 	id: 7,
 	color: '#D14B1B',
-	texture: function(face)
-	{
-		return [7, 0];
+	texture: function(face){
+		return [7, 0]
 	},
 	transparent: false,
 	solid: true
@@ -185,9 +163,8 @@ nodeType.bricks = {
 nodeType.gravel = {
 	id: 8,
 	color: '#5E6469',
-	texture: function(face)
-	{
-		return [3, 1];
+	texture: function(face){
+		return [3, 1]
 	},
 	transparent: false,
 	solid: true
@@ -197,9 +174,8 @@ nodeType.gravel = {
 nodeType.sand = {
 	id: 9,
 	color: '#FCE781',
-	texture: function(face)
-	{
-		return [2, 1];
+	texture: function(face){
+		return [2, 1]
 	},
 	transparent: false,
 	solid: true
@@ -208,20 +184,13 @@ nodeType.sand = {
 nodeType.sandstone = {
 	id: 10,
 	color: '#FFEE88',
-	texture: function(face)
-	{
+	texture: function(face){
 		if(face == FACE.TOP)
-		{
-			return [0, 11];
-		}
+			return [0, 11]
 		else if(face != FACE.BOTTOM)
-		{
-			return [0, 12];
-		}
+			return [0, 12]
 		else
-		{
-			return [0, 13];
-		}
+			return [0, 13]
 	},
 	transparent: false,
 	solid: true
@@ -230,9 +199,8 @@ nodeType.sandstone = {
 nodeType.obsidian = {
 	id: 11,
 	color: '#2C202F',
-	texture: function(face)
-	{
-		return [5, 2];
+	texture: function(face){
+		return [5, 2]
 	},
 	transparent: false,
 	solid: true
@@ -241,9 +209,8 @@ nodeType.obsidian = {
 nodeType.glass = {
 	id: 12,
 	color: '#A3D8FF',
-	texture: function(face)
-	{
-		return [1, 3];
+	texture: function(face){
+		return [1, 3]
 	},
 	transparent: true,
 	solid: true
@@ -252,9 +219,8 @@ nodeType.glass = {
 nodeType.leaves = {
 	id: 13,
 	color: '#029700',
-	texture: function(face)
-	{
-		return [4, 3];
+	texture: function(face){
+		return [4, 3]
 	},
 	transparent: true,
 	solid: true
@@ -263,9 +229,8 @@ nodeType.leaves = {
 nodeType.black = {
 	id: 14,
 	color: '#262626',
-	texture: function(face)
-	{
-		return [1, 7];
+	texture: function(face){
+		return [1, 7]
 	},
 	transparent: false,
 	solid: true
@@ -274,9 +239,8 @@ nodeType.black = {
 nodeType.red = {
 	id: 15,
 	color: '#BE3600',
-	texture: function(face)
-	{
-		return [1, 8];
+	texture: function(face){
+		return [1, 8]
 	},
 	transparent: false,
 	solid: true
@@ -285,9 +249,8 @@ nodeType.red = {
 nodeType.rose = {
 	id: 16,
 	color: '#FC79AE',
-	texture: function(face)
-	{
-		return [2, 8];
+	texture: function(face){
+		return [2, 8]
 	},
 	transparent: false,
 	solid: true
@@ -296,9 +259,8 @@ nodeType.rose = {
 nodeType.orange = {
 	id: 17,
 	color: '#C67B00',
-	texture: function(face)
-	{
-		return [2, 13];
+	texture: function(face){
+		return [2, 13]
 	},
 	transparent: false,
 	solid: true
@@ -307,9 +269,8 @@ nodeType.orange = {
 nodeType.yellow = {
 	id: 18,
 	color: '#C1C600',
-	texture: function(face)
-	{
-		return [2, 10];
+	texture: function(face){
+		return [2, 10]
 	},
 	transparent: false,
 	solid: true
@@ -318,9 +279,8 @@ nodeType.yellow = {
 nodeType.white = {
 	id: 19,
 	color: '#E2E2E2',
-	texture: function(face)
-	{
-		return [0, 4];
+	texture: function(face){
+		return [0, 4]
 	},
 	transparent: false,
 	solid: true
@@ -329,9 +289,8 @@ nodeType.white = {
 nodeType.green = {
 	id: 20,
 	color: '#0E7000',
-	texture: function(face)
-	{
-		return [1, 9];
+	texture: function(face){
+		return [1, 9]
 	},
 	transparent: false,
 	solid: true
@@ -340,9 +299,8 @@ nodeType.green = {
 nodeType.cyan = {
 	id: 21,
 	color: '#00D0CC',
-	texture: function(face)
-	{
-		return [1, 13];
+	texture: function(face){
+		return [1, 13]
 	},
 	transparent: false,
 	solid: true
@@ -351,9 +309,8 @@ nodeType.cyan = {
 nodeType.blue = {
 	id: 22,
 	color: '#085CD0',
-	texture: function(face)
-	{
-		return [1, 11];
+	texture: function(face){
+		return [1, 11]
 	},
 	transparent: false,
 	solid: true
@@ -362,9 +319,8 @@ nodeType.blue = {
 nodeType.purple = {
 	id: 23,
 	color: '#6E0FD3',
-	texture: function(face)
-	{
-		return [1, 12];
+	texture: function(face){
+		return [1, 12]
 	},
 	transparent: false,
 	solid: true
@@ -373,9 +329,8 @@ nodeType.purple = {
 nodeType.water = {
 	id: 24,
 	color: '#5E65E1',
-	texture: function(face)
-	{
-		return [14, 12];
+	texture: function(face){
+		return [14, 12]
 	},
 	transparent: true,
 	solid: false
@@ -384,9 +339,8 @@ nodeType.water = {
 nodeType.lava = {
 	id: 25,
 	color: '#FF1408',
-	texture: function(face)
-	{
-		return [14, 15];
+	texture: function(face){
+		return [14, 15]
 	},
 	transparent: false,
 	solid: true
@@ -395,9 +349,8 @@ nodeType.lava = {
 nodeType.darkgray = {
 	id: 26,
 	color: '#4B4B4B',
-	texture: function(face)
-	{
-		return [2, 7];
+	texture: function(face){
+		return [2, 7]
 	},
 	transparent: false,
 	solid: true
@@ -406,9 +359,8 @@ nodeType.darkgray = {
 nodeType.gray = {
 	id: 27,
 	color: '#949494',
-	texture: function(face)
-	{
-		return [1, 14];
+	texture: function(face){
+		return [1, 14]
 	},
 	transparent: false,
 	solid: true
@@ -417,9 +369,8 @@ nodeType.gray = {
 nodeType.lime = {
 	id: 28,
 	color: '#68D000',
-	texture: function(face)
-	{
-		return [2, 9];
+	texture: function(face){
+		return [2, 9]
 	},
 	transparent: false,
 	solid: true
@@ -428,9 +379,8 @@ nodeType.lime = {
 nodeType.brown = {
 	id: 29,
 	color: '#6C360A',
-	texture: function(face)
-	{
-		return [1, 10];
+	texture: function(face){
+		return [1, 10]
 	},
 	transparent: false,
 	solid: true
@@ -439,9 +389,8 @@ nodeType.brown = {
 nodeType.lightblue = {
 	id: 30,
 	color: '#4E9EFF',
-	texture: function(face)
-	{
-		return [2, 11];
+	texture: function(face){
+		return [2, 11]
 	},
 	transparent: false,
 	solid: true
@@ -450,9 +399,8 @@ nodeType.lightblue = {
 nodeType.magneta = {
 	id: 31,
 	color: '#B956FF',
-	texture: function(face)
-	{
-		return [2, 12];
+	texture: function(face){
+		return [2, 12]
 	},
 	transparent: false,
 	solid: true
@@ -461,9 +409,8 @@ nodeType.magneta = {
 nodeType.ice = {
 	id: 32,
 	color: '#7CC8FF',
-	texture: function(face)
-	{
-		return [3, 4];
+	texture: function(face){
+		return [3, 4]
 	},
 	transparent: true,
 	solid: true
@@ -472,9 +419,8 @@ nodeType.ice = {
 nodeType.snow = {
 	id: 33,
 	color: '#F5F9FB',
-	texture: function(face)
-	{
-		return [2, 4];
+	texture: function(face){
+		return [2, 4]
 	},
 	transparent: false,
 	solid: true
@@ -483,16 +429,11 @@ nodeType.snow = {
 nodeType.stoneblock = {
 	id: 34,
 	color: '#9E9E9E',
-	texture: function(face)
-	{
+	texture: function(face){
 		if(face < FACE.TOP)
-		{
-			return [5, 0];
-		}
+			return [5, 0]
 		else
-		{
-			return [6, 0];
-		}
+			return [6, 0]
 	},
 	transparent: false,
 	solid: true
@@ -501,9 +442,8 @@ nodeType.stoneblock = {
 nodeType.cobweb = {
 	id: 35,
 	color: '#FFFFFF',
-	texture: function(face)
-	{
-		return [11, 0];
+	texture: function(face){
+		return [11, 0]
 	},
 	transparent: true,
 	solid: true
@@ -512,9 +452,8 @@ nodeType.cobweb = {
 nodeType.bedrock = {
 	id: 36,
 	color: '#222222',
-	texture: function(face)
-	{
-		return [1, 1];
+	texture: function(face){
+		return [1, 1]
 	},
 	transparent: false,
 	solid: true

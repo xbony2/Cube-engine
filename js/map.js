@@ -47,32 +47,29 @@ Map.prototype.getHeight = function(x, z){
 	
 	return this.cache[cx + '_' + cz][lx][lz]
 }
-//TODO: refactor
+
 // returns corner heigt values for giver chunk
-Map.prototype.getCorners = function(cx, cz)
-{
+Map.prototype.getCorners = function(cx, cz){
 	// 2-a-3
 	// z   |
 	// 0-b-1
 	
 	return [
-		this.noise(cx*16, cz*16),
-		this.noise(cx*16+16, cz*16),
-		this.noise(cx*16, cz*16+16),
-		this.noise(cx*16+16, cz*16+16)
-	];
+		this.noise(cx * 16, cz * 16),
+		this.noise(cx * 16 + 16, cz * 16),
+		this.noise(cx * 16, cz * 16 + 16),
+		this.noise(cx * 16 + 16, cz * 16 + 16)
+	]
 }
 
 // returns a value between 0 and 1
-Map.prototype.noise = function(x, y)
-{
-	var k = x+y*this.seed;
-	n = (k<<13)^k;
-	return ((n*(n*n*60493+19990303)+1376312589)&0x7fffffff)/2147483648;
+Map.prototype.noise = function(x, y){
+	var k = x + y * this.seed
+	n = (k << 13) ^ k
+	return ((n * (n * n * 60493 + 19990303) + 1376312589)&0x7fffffff) / 2147483648
 }
 
-Map.prototype.interpolate = function(a, b, x)
-{
-	var f = (1.0-Math.cos(x*3.1415927))*0.5;
-	return a*(1.0-f)+b*f;
+Map.prototype.interpolate = function(a, b, x){
+	var f = (1.0 - Math.cos(x * 3.1415927)) * 0.5
+	return a * (1.0 - f) + b * f
 }
