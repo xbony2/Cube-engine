@@ -97,202 +97,149 @@ World.prototype.getNode = function(x, y, z){
 }
 
 World.prototype.addNode = function(x, y, z, type){
-	var cx = Math.floor(x/16) //TODO: refactor
-	var cz = Math.floor(z/16);
-	var node;
+	var cx = Math.floor(x / 16)
+	var cz = Math.floor(z / 16)
+	var node
 	
 	// space already occupied
 	if(this.getNode(x, y, z))
-	{
-		return false;
-	}
+		return false
 	
-	if(!this.chunks[cx+'_'+cz])
-	{
-		this.chunks[cx+'_'+cz] = new Chunk(cx, cz);
-	}
+	if(!this.chunks[cx + '_' + cz])
+		this.chunks[cx + '_' + cz] = new Chunk(cx, cz)
 	
-	node = new Node(x, y, z, type);
-	this.chunks[cx+'_'+cz].nodes[x+'_'+y+'_'+z] = node;
-	this.occludedFaceCulling(node);
+	node = new Node(x, y, z, type)
+	this.chunks[cx + '_' + cz].nodes[x + '_' + y + '_' + z] = node
+	this.occludedFaceCulling(node)
 }
 
-World.prototype.removeNode = function(node)
-{
-	node.removed = true;
+World.prototype.removeNode = function(node){
+	node.removed = true
 	
-	this.occludedFaceCulling(node);
+	this.occludedFaceCulling(node)
 	
-	var cx = Math.floor(node.x/16);
-	var cz = Math.floor(node.z/16);
+	var cx = Math.floor(node.x / 16)
+	var cz = Math.floor(node.z / 16)
 	
-	delete this.chunks[cx+'_'+cz].renderNodes[node.x+'_'+node.y+'_'+node.z];
-	delete this.chunks[cx+'_'+cz].nodes[node.x+'_'+node.y+'_'+node.z];
+	delete this.chunks[cx + '_' + cz].renderNodes[node.x + '_' + node.y + '_' + node.z]
+	delete this.chunks[cx + '_' + cz].nodes[node.x + '_' + node.y + '_' + node.z]
 }
 
-World.prototype.occludedFaceCulling = function(node)
-{	
-	var faces = [FACE.FRONT, FACE.BACK, FACE.RIGHT, FACE.LEFT, FACE.TOP, FACE.BOTTOM];
-	var pos = [[0,0,1], [0,0,-1], [1,0,0], [-1,0,0], [0,1,0], [0,-1,0]];
-	var adjn;
+World.prototype.occludedFaceCulling = function(node){	
+	var faces = [FACE.FRONT, FACE.BACK, FACE.RIGHT, FACE.LEFT, FACE.TOP, FACE.BOTTOM]
+	var pos = [[0, 0, 1], [0, 0, -1], [1, 0, 0], [-1, 0, 0], [0, 1, 0], [0, -1, 0]]
+	var adjn
 	
-	for(var i=0; i<3; i++)
-	{
+	for(var i = 0; i < 3; i++){
 		// opposite faces
-		var face1 = i*2;
-		var face2 = i*2+1;
+		var face1 = i * 2
+		var face2 = i * 2 + 1
 		
 		// face1: front, right, top faces
-		adjn = this.getNode(node.x+pos[face1][0], node.y+pos[face1][1], node.z+pos[face1][2]);
+		adjn = this.getNode(node.x + pos[face1][0], node.y + pos[face1][1], node.z + pos[face1][2])
 		
 		// adjacent node doesn't exist or is a half node
 		if(!adjn)
-		{
-			// add face
-			node.sides |= faces[face1];
-		}
-		else
-		{
+			node.sides |= faces[face1] // add face
+		else{
 			// one of the nodes is removed
-			if(node.removed || adjn.removed)
-			{
+			if(node.removed || adjn.removed){
+				node.sides |= faces[face1]
+				adjn.sides |= faces[face2]
+			}else if(FACE.TOP & (1<<face1) && node.type.half){ // add top face
 				node.sides |= faces[face1];
 				adjn.sides |= faces[face2];
-			}
-			// add top face
-			else if(FACE.TOP & (1<<face1) && node.type.half)
-			{
-				node.sides |= faces[face1];
-				adjn.sides |= faces[face2];
-			}
-			// one is transparent, remove transparent face but not the opaque
-			else if(node.type.transparent && !adjn.type.transparent)
-			{
-				node.sides &= ~faces[face1];
-				adjn.sides |= faces[face2];
-			}
-			else if(!node.type.transparent && adjn.type.transparent)
-			{
-				node.sides |= faces[face1];
-				adjn.sides &= ~faces[face2];
-			}
-			// both transparent, remove faces only if of the same type
-			else if(node.type.transparent && adjn.type.transparent && node.type == adjn.type)
-			{
-				node.sides &= ~faces[face1];
-				adjn.sides &= ~faces[face2];
-			}
-			// both transparent, different types
-			else if(node.type.transparent && adjn.type.transparent && node.type != adjn.type)
-			{
-				node.sides |= faces[face1];
-				adjn.sides |= faces[face2];
-			}
-			// one is half node, remove half face but not the full face
-			else if(0xf&(1<<face1) && node.type.half && !adjn.type.half)
-			{
-				node.sides &= ~faces[face1];
-				adjn.sides |= faces[face2];
-			}
-			else if(0xf&(1<<face1) && !node.type.half && adjn.type.half)
-			{
-				node.sides |= faces[face1];
-				adjn.sides &= ~faces[face2];
-			}
-			// remove faces since between 2 opaque nodes
-			else
-			{
-				node.sides &= ~faces[face1];
-				adjn.sides &= ~faces[face2];
+			}else if(node.type.transparent && !adjn.type.transparent){
+				// one is transparent, remove transparent face but not the opaque
+				node.sides &= ~faces[face1]
+				adjn.sides |= faces[face2]
+			}else if(!node.type.transparent && adjn.type.transparent){
+				node.sides |= faces[face1]
+				adjn.sides &= ~faces[face2]
+			}else if(node.type.transparent && adjn.type.transparent && node.type == adjn.type){
+				// both transparent, remove faces only if of the same type
+				node.sides &= ~faces[face1]
+				adjn.sides &= ~faces[face2]
+			}else if(node.type.transparent && adjn.type.transparent && node.type != adjn.type){
+				// both transparent, different types
+				node.sides |= faces[face1]
+				adjn.sides |= faces[face2]
+			}else if(0xf & (1 << face1) && node.type.half && !adjn.type.half){
+				// one is half node, remove half face but not the full face
+				node.sides &= ~faces[face1]
+				adjn.sides |= faces[face2]
+			}else if(0xf & (1 << face1) && !node.type.half && adjn.type.half){
+				node.sides |= faces[face1]
+				adjn.sides &= ~faces[face2]
+			}else{
+				// remove faces since between 2 opaque nodes
+				node.sides &= ~faces[face1]
+				adjn.sides &= ~faces[face2]
 			}
 			
-			this.renderNode(adjn);
+			this.renderNode(adjn)
 		}
 		
 		// face2: back, left, bottom
-		adjn = this.getNode(node.x+pos[face2][0], node.y+pos[face2][1], node.z+pos[face2][2]);
+		adjn = this.getNode(node.x + pos[face2][0], node.y + pos[face2][1], node.z + pos[face2][2])
 		
 		// adjacent node doesn't exist or is a half node
 		if(!adjn)
-		{
-			// add face
-			node.sides |= faces[face2];
-		}
-		else
-		{
+			node.sides |= faces[face2] // add face
+		else{
 			// one of the nodes is removed
-			if(node.removed || adjn.removed)
-			{
-				node.sides |= faces[face2];
-				adjn.sides |= faces[face1];
+			if(node.removed || adjn.removed){
+				node.sides |= faces[face2]
+				adjn.sides |= faces[face1]
 			}
 			// add bottom face
-			else if(FACE.BOTTOM & (1<<face2) && adjn.type.half)
-			{
-				node.sides |= faces[face2];
-				adjn.sides |= faces[face1];
-			}
-			// one is transparent, remove transparent face but not the opaque
-			else if(node.type.transparent && !adjn.type.transparent)
-			{
-				node.sides &= ~faces[face2];
-				adjn.sides |= faces[face1];
-			}
-			else if(!node.type.transparent && adjn.type.transparent)
-			{
-				node.sides |= faces[face2];
-				adjn.sides &= ~faces[face1];
-			}
-			// both transparent, remove faces only if of the same type
-			else if(node.type.transparent && adjn.type.transparent && node.type == adjn.type)
-			{
-				node.sides &= ~faces[face2];
-				adjn.sides &= ~faces[face1];
-			}
-			// both transparent, different types
-			else if(node.type.transparent && adjn.type.transparent && node.type != adjn.type)
-			{
-				node.sides |= faces[face2];
-				adjn.sides |= faces[face1];
-			}
-			// one is half node, remove half face but not the full face
-			else if(0xf&(1<<face2) && node.type.half && !adjn.type.half)
-			{
-				node.sides &= ~faces[face2];
-				adjn.sides |= faces[face1];
-			}
-			else if(0xf&(1<<face2) && !node.type.half && adjn.type.half)
-			{
-				node.sides |= faces[face2];
-				adjn.sides &= ~faces[face1];
-			}
-			// remove faces since between 2 opaque nodes
-			else
-			{
-				node.sides &= ~faces[face2];
-				adjn.sides &= ~faces[face1];
+			else if(FACE.BOTTOM & (1<<face2) && adjn.type.half){
+				node.sides |= faces[face2]
+				adjn.sides |= faces[face1]
+			}else if(node.type.transparent && !adjn.type.transparent){
+				// one is transparent, remove transparent face but not the opaque
+				node.sides &= ~faces[face2]
+				adjn.sides |= faces[face1]
+			}else if(!node.type.transparent && adjn.type.transparent){
+				node.sides |= faces[face2]
+				adjn.sides &= ~faces[face1]
+			}else if(node.type.transparent && adjn.type.transparent && node.type == adjn.type){
+				// both transparent, remove faces only if of the same type
+				node.sides &= ~faces[face2]
+				adjn.sides &= ~faces[face1]
+			}else if(node.type.transparent && adjn.type.transparent && node.type != adjn.type){
+				// both transparent, different types
+				node.sides |= faces[face2]
+				adjn.sides |= faces[face1]
+			}else if(0xf & (1 << face2) && node.type.half && !adjn.type.half){
+				// one is half node, remove half face but not the full face
+				node.sides &= ~faces[face2]
+				adjn.sides |= faces[face1]
+			}else if(0xf & (1 << face2) && !node.type.half && adjn.type.half){
+				node.sides |= faces[face2]
+				adjn.sides &= ~faces[face1]
+			}else{
+				// remove faces since between 2 opaque nodes
+				node.sides &= ~faces[face2]
+				adjn.sides &= ~faces[face1]
 			}
 		
-			this.renderNode(adjn);
+			this.renderNode(adjn)
 		}
 	}
 	
-	this.renderNode(node);
+	this.renderNode(node)
 }
 
-World.prototype.renderNode = function(node)
-{
-	var rendered = false;
+World.prototype.renderNode = function(node){
+	var rendered = false
 	
-	var cx = Math.floor(node.x/16);
-	var cz = Math.floor(node.z/16);
+	var cx = Math.floor(node.x / 16)
+	var cz = Math.floor(node.z / 16)
 	
-	if(node.sides & 0x3f)
-	{
-		this.chunks[cx+'_'+cz].renderNodes[node.x+'_'+node.y+'_'+node.z] = node;
-	}
-	else
-	{
-		delete this.chunks[cx+'_'+cz].renderNodes[node.x+'_'+node.y+'_'+node.z];
+	if(node.sides & 0x3f){
+		this.chunks[cx + '_' + cz].renderNodes[node.x + '_' + node.y + '_' + node.z] = node
+	}else{
+		delete this.chunks[cx + '_' + cz].renderNodes[node.x + '_' + node.y + '_' + node.z]
 	}
 }
