@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Cube Engine v1.0</title>
+<title>Cube Engine v2.0.0a</title>
 <meta name="description" content="Cube Engine: an HTML5 3D engine">
 <meta charset="utf-8">
 
@@ -15,12 +15,11 @@
 <script type="text/javascript" src="js/render.js"></script>
 <script type="text/javascript" src="js/TouchControl.js"></script>
 <script type="text/javascript">
-	toggleJoystick = function (elem) {
-		if (elem.style.display === "none") {
-			elem.style.display = "block";
-		} else {
-			elem.style.display = "none";
-		}
+	toggleJoystick = function(elem){
+		if(elem.style.display === "none")
+			elem.style.display = "block"
+		else
+			elem.style.display = "none"
 	}
 </script>
 
@@ -28,10 +27,9 @@
 <body>
 
 	<div id="controls">
-		<h1>Cube Engine v1.0</h1>
+		<h1>Cube Engine v2.0.0a</h1>
 		<ul>
-			<li><a href="https://github.com/Nurgak/Cube-engine">Download
-					the source</a></li>
+			<li><a href="https://github.com/xbony2/Cube-engine/tree/gh-pages">Download the source</a></li>
 		</ul>
 		<h2>Controls</h2>
 		<ul>
@@ -43,34 +41,23 @@
 		</ul>
 		<h2>Options</h2>
 		<ul>
-			<li><u>H</u>UD: <input type="checkbox" checked="yes"
-				onchange="renderer.hud = this.checked;" accesskey="h"></li>
-			<li><u>G</u>ravity: <input type="checkbox" checked="yes"
-				onchange="player.gravity = this.checked;" accesskey="g"></li>
-			<li><u>C</u>ollision detection: <input type="checkbox"
-				checked="yes" onclick="player.collision = this.checked;"
+			<li><div class="und">H</div>UD: <input type="checkbox" checked="yes" onchange="renderer.hud = this.checked;" accesskey="h"></li>
+			<li><div class="und">G</div>ravity: <input type="checkbox" checked="yes" onchange="player.gravity = this.checked;" accesskey="g"></li>
+			<li><div class="und">C</div>ollision detection: <input type="checkbox" checked="yes" onclick="player.collision = this.checked;"
 				accesskey="c"></li>
-			<li><u>P</u>erformace graph: <input type="checkbox"
-				onchange="renderer.graph = this.checked;" accesskey="p"></li>
-			<li><u>M</u>ap: <input type="checkbox"
-				onchange="renderer.map = this.checked;" accesskey="m"></li>
-			<li><input type="button" value="Lock pointer"
-				onclick="renderer.lockPointer();"></li>
-			<li><input type="button" value="Joystick"
-				onclick="toggleJoystick(document.getElementById('joystick'))"></li>
-			<li>Focal length:<br> <input type="range" min="100"
-				max="1000" value="500" onchange="renderer.focalLength = this.value">
-			</li>
-			<li>Render distance:<br> <input type="range" min="20"
-				max="1024" value="100"
-				onchange="renderer.changeRenderDist(this.value);">
-			</li>
-			<li><u>R</u>ender mode:<br> <select
-				onchange="renderer.renderMode = this.value;" accesskey="r">
-					<option value="0">Plain color</option>
+			<li><div class="und">P</div>erformace graph: <input type="checkbox" onchange="renderer.graph = this.checked;" accesskey="p"></li>
+			<li><div class="und">M</div>ap: <input type="checkbox" onchange="renderer.map = this.checked;" accesskey="m"></li>
+			<li><input type="button" value="Lock pointer" onclick="renderer.lockPointer();"></li>
+			<li><input type="button" value="Joystick" onclick="toggleJoystick(document.getElementById('joystick'))"></li>
+			<li>Focal length:<br> <input type="range" min="100" max="1000" value="500" 
+				onchange="renderer.focalLength = this.value"></li>
+			<li>Render distance:<br> <input type="range" min="20" max="1024" value="100" 
+				onchange="renderer.changeRenderDist(this.value);"></li>
+			<li><div class="und">R</div>ender mode:<br> <select onchange="renderer.renderMode = this.value;" accesskey="r">
+					<option value="0">Plain color</option> 
 					<option value="1" selected>Textured</option>
 			</select></li>
-			<li><u>T</u>ype:<br> <select id="type" accesskey="t">
+			<li><div class="und">T</div>ype:<br> <select id="type" accesskey="t">
 					<optgroup label="Construction">
 						<option value="dirt">Dirt</option>
 						<option value="grass">Grass</option>
@@ -122,8 +109,7 @@
 					<option value="world3">world3</option>
 					<option value="world4">world4</option>
 					<option value="world5">world5</option>
-			</select> <br> <input type="button" value="Save"
-				onclick="save.saveLocally(player);"> <input type="button"
+			</select> <br> <input type="button" value="Save" onclick="save.saveLocally(player);"> <input type="button"
 				value="Save to file" onclick="save.saveToFile(player);">
 			</li>
 			<li>Load<br> <select id="load">
@@ -132,16 +118,12 @@
 					<option value="world3">world3</option>
 					<option value="world4">world4</option>
 					<option value="world5">world5</option>
-			</select><br> <input type="button" value="Load"
-				onclick="save.loadLocalSave();"> <input type="button"
+			</select><br> <input type="button" value="Load" onclick="save.loadLocalSave();"> <input type="button"
 				value="Remove" onclick="save.removeLocalSave();">
 			</li>
-			<li>Load file<br> <input type="button" value="Load file"
-				onclick="document.getElementById('worldFile').click();">
+			<li>Load file<br> <input type="button" value="Load file" onclick="document.getElementById('worldFile').click();">
 				<form id="upload">
-					<input type="file" id="worldFile"
-						onchange="save.loadFromFile(this.files[0]);"
-						style="visibility: hidden;">
+					<input type="file" id="worldFile" onchange="save.loadFromFile(this.files[0]);" style="visibility: hidden;">
 				</form>
 			</li>
 		</ul>
@@ -151,12 +133,12 @@
 	<joystick id="joystick" style="display: none;"></joystick>
 	<script type="text/javascript">
 
-var canvas = document.getElementById("canvas");
+var canvas = document.getElementById("canvas")
 
-var world = new World(3);
-var player = new Player(world);
-var renderer = new Renderer(canvas, world, player);
-var save = new Save(world, player);
+var world = new World(3)
+var player = new Player(world)
+var renderer = new Renderer(canvas, world, player)
+var save = new Save(world, player)
 
 </script>
 
